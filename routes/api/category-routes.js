@@ -69,12 +69,18 @@ router.put('/:id', (req, res) => {
       id: req.params.id
     }
   })
-    .then(dbCatData => {
-      if (!dbCatData) {
+    .then(updateCategory => {
+      if (!updateCategory) {
+        console.log('Category not found with this id');
         res.status(404).json({message:'No category found with this id'});
         return;
       }
-      res.json(dbCatData);
+      // Doesnt show as json response but works
+      console.log('Successfully updated category');
+      res.json(updateCategory);
+     
+       
+
     })
     .catch(err => {
       console.log(err);
@@ -83,6 +89,26 @@ router.put('/:id', (req, res) => {
 });
 router.delete('/:id', (req, res) => {
   // delete a category by its `id` value
+  Category.destroy({
+    where: { id: req.params.id },
+  })
+    .then((categoryData) => {
+      if (!categoryData) {
+        console.log('Category not found with this id');
+        return res.status(404).json({ error: 'Category not found with this id' });
+      }
+      else {
+        // Doesnt show as json response but works
+        console.log('Successfully deleted category');
+        res.json(categoryData);
+        return res.status.json({ message: 'Successfully deleted category' });
+      }
+    })
+    .catch(err => {
+      console.log(err);
+      res.status(500).json(err);
+    });
 });
+
 
 module.exports = router;
